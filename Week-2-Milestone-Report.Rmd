@@ -1,0 +1,191 @@
+---
+title: "Milestone Report Data Science Capstone Project"
+author: "Ashwin Sai Murali Neelakandan"
+date: "2025-01-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction  
+
+This is the Week 2 Milestone report for the Coursera Data Science Capstone Project.  
+
+The goal of this report is to perform appropriate exploratory analyses on the given raw data to understand the statistical properties of the data set that can later be of use when building the initial prediction model for the final Shiny app product.
+This report will identify major features of the data provided and then briefly summarize the plans to create the prediction algorithm
+
+The predictive model will trained using the document corpus complied from three sources of text data:  
+- Blogs  
+- Twitter  
+- News  
+
+The model will only focus on the English corpora, but 3 other languages are available.  
+
+### Data
+
+The data was downloaded from https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip  
+
+## Setting up the Environment
+
+Due to large size of the data, I have downloaded the data from the above link, unzipped it and stored it locally in the folder Coursera-SwiftKey to save time downloading and unzipping the data.    
+
+```{r, message=FALSE}
+
+# Loading the necessary packages  
+
+library(knitr)
+library(dplyr)
+library(ggplot2)
+
+# Clearing the workspace including hidden objects  
+
+rm(list=ls(all.names = TRUE))
+
+# Setting the working directory
+
+setwd("C:/Users/ashwi/OneDrive/Documents/Coursera/Data Science Capstone/Project Data/Coursera-SwiftKey/final/en_US")
+```  
+
+### Document Setup 
+
+Reading the Blogs, News, and Twitter Files  
+
+```{r, cache=TRUE, warning=FALSE}
+
+# Twitter  
+twitterfile <- readLines(con = file("~/Coursera/Data Science Capstone/Project Data/Coursera-SwiftKey/final/en_US/en_US.twitter.txt"), encoding = "UTF-8", skipNul = TRUE)
+
+# Blogs
+
+blogfile <- readLines(con = file("~/Coursera/Data Science Capstone/Project Data/Coursera-SwiftKey/final/en_US/en_US.blogs.txt"), encoding = "UTF-8", skipNul = TRUE)
+
+# News  
+
+newsfile <- readLines(con = file("~/Coursera/Data Science Capstone/Project Data/Coursera-SwiftKey/final/en_US/en_US.news.txt"), encoding = "UTF-8", skipNul = TRUE)
+
+# Looking at few lines from each file
+
+blogfile [c(5, 10)]
+
+twitterfile [c(12, 24)]
+
+newsfile [c(3, 16)]
+
+rm(con)
+```  
+  
+## Exploratory Data Analysis  
+
+Checking the filesizes, word counts, line counts, character counts, and longest line in the 3 files
+```{r, cache=TRUE}
+# Checking the size of each file in megabytes (MB)
+
+blogname <- "en_US.blogs.txt"
+twittername <- "en_US.twitter.txt"
+newsname <- "en_US.news.txt"
+MBsize <- round(file.info(c(blogname, 
+                            twittername, 
+                            newsname))$size/1024^2)
+
+# Checking the number of lines for all three files
+
+bloglines <- length(blogfile)
+twitterlines <- length(twitterfile)
+newslines <- length(newsfile)
+
+file_lines <- c(bloglines, twitterlines, newslines)
+
+# Checking the number of characters
+
+blogchar <- sum(nchar(blogfile))
+twitterchar <- sum(nchar(twitterfile))
+newschar <- sum(nchar(newsfile))
+
+file_char <- c(blogchar, twitterchar, newschar)
+
+# Checking the number of words
+
+blogwords <- sum(sapply(strsplit(blogfile, " "), length))
+twitterwords <- sum(sapply(strsplit(twitterfile, " "), length))
+newswords <- sum(sapply(strsplit(newsfile, " "), length))
+
+file_words <- c(blogwords, twitterwords, newswords)
+
+# Finding the number of characters in the longest line in each file
+
+blogll <- max(nchar(blogfile))
+twitterll <- max(nchar(twitterfile))
+newsll <- max(nchar(newsfile))
+
+file_ll <- c(blogll, twitterll, newsll)
+```
+Finding mean Words per Line for the above three files
+```{r, cache = TRUE}
+
+mblogwpl <- mean(sapply(strsplit(blogfile, " "), length))
+mtwitterwpl <- mean(sapply(strsplit(twitterfile, " "), length))
+mnewswpl <- mean(sapply(strsplit(newsfile, " "), length))
+
+mfile_wpl <- c(mblogwpl, mtwitterwpl, mnewswpl)
+```
+
+Creating a summary of all the above characteristics
+```{r}
+# Creating a data frame with values of all characteristics seen above
+summary <- data.frame(Name = c("en_US.blogs.txt", "en_US.twitter.txt", "en_US.news.txt"),
+                      Size = paste(MBsize,"MB"))
+summary$Lines = file_lines
+summary$Characters = file_char
+summary$Words = file_words
+summary$LongestLine = file_ll
+summary$MeanWordsperLine = mfile_wpl
+summary
+```
+From the table, We can see that file size ranges between 160 upto 200 MB, with the smallest being the Twitter file and the largest being the Blogs file.
+Alternatively, the Blogs file has the smallest no.of lines (`r bloglines`) compared with the Twitter file (`r twitterlines`)
+The word counts exceeds 30 million for all three files
+In terms of the number of characters, the Blogs file is the largest (`r blogchar`) compared to the News file which is the smallest (`r newschar`)
+
+It is interesting to see that Twitter file has the lowest values for maximum words per line (`r twitterll`) this can be attributed to the restrictions Twitter places on the length of an single tweet. Comparatively, News and Blogs aren't restricted at such levels, thus they display larger number of maximum words per lines `r newsll` and `r blogll` respectively
+
+### Graphs
+
+Plotting the filesizes, maximum words per line, word counts, and line counts as histograms for the three files
+
+```{r}
+# Filesize Plot
+plot1 <- ggplot(summary, aes(x = Name, y = Size), color = Name, fill = Name) + 
+  geom_bar(stat = "identity", fill = "blue", alpha = 0.7) + 
+  labs(title = "File Size Graph") + 
+  xlab("File Name") + ylab("File Size in Megabytes")
+print(plot1)
+
+# Line Count Plot
+plot2 <- ggplot(summary, aes(Name, Lines), color = Name, fill = Name) + 
+  geom_bar(stat = "identity") + 
+  labs(title = "Lines in each file") + 
+  xlab("File Name") + ylab("Number of Lines")
+print(plot2)
+
+# Mean Words per Line Plot for all three files
+plot3 <- ggplot(summary, aes(Name, MeanWordsperLine), color = Name, fill = Name) + 
+  geom_bar(stat = "identity", fill = "magenta4", alpha = 0.5, width = 0.5) +
+  labs(title = "Mean Words Per Line for three files") +
+  xlab("Name of the File") + ylab("Mean Words per Line")+
+  theme_minimal()
+print(plot3)
+```
+
+## Things to consider to move forward 
+
+The final goal of the Capstone project is to build an predictive algorithm that is to be deployed as a Shiny app which would a take a phrase (with multiple words) and spit out a prediction of possible next word.    
+
+The Exploratory Analysis has showed the characteristics of the data considered i.e. Word counts, Line counts, Character Counts, Mean Words per line, Longest Line, and file sizes.    
+A generic way to move forward with building the prediction model will be to:  
+1. Converting Uppercase Letter to lowercase letters (un-capitalizing the words)  
+2. Removing words and characters that are in a different language from the files  
+3. Removing punctuation characters  
+4. Profanity Filtering  
+5. Sampling the combined dataset randomly -  to make the algorithm faster in order to make the app run the algorithm in the background and just to provide the predictions as output. Otherwise, the lag will make the app unusable and/or inaccurate  

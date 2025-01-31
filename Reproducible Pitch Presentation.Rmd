@@ -1,0 +1,47 @@
+---
+title: "Data Science Capstone Final Project Pitch"
+author: "Ashwin Sai Murali Neelakandan"
+date: "2025-01-29"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Synopsis  
+
+This capstone project was the final part of the Data Science Specialization by Johns Hopkins University at Coursera. The source code for this project can be found on GitHub at the following link:   
+
+## About the Project  
+
+The final course project is of 2 parts:  
+
+  - Creating a Shiny application and deploy it on RStudio servers  
+  - Using Slidify or RStudio Presenter to create a short, reproducible pitch for the Shiny app  
+  
+  The name of the Shiny App developed is "Word Prediction App", and it is hosted on RStudio's shinyapps.io hosted service, the link can be found below:
+    
+  
+## Data Used  
+
+The data used for the Coursera Data Science Capstone Project is obtained from a corpus called HC Corpora.
+
+The corpora are collected from publicly available sources by a web crawler. The crawler checks for language, so as to mainly get texts consisting of the desired language
+
+The document corpus used to build the model was complied from samples taken from the three sources of text data:
+- Blogs
+- Twitter
+- News
+
+The model will only focus on the English corpora, but 3 other languages were available.  
+
+## Basic Process of Building the Model  
+
+ - Getting the raw corpora data  
+ - Doing some initial exploratory analyses to understand the statistical properties of the data set  
+ - Sampling the each text file and cleaning them i.e. removing punctuations, number, profanity, URLs and so on  
+ - Combining the sample data to create a corpora  
+ - Building N grams and calculating their frequencies  
+ - Building the prediciton algorithm and the shiny app  
+ 
