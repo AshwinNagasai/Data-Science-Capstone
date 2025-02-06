@@ -1,8 +1,10 @@
 ---
 title: "Data Science Capstone Final Project Pitch"
 author: "Ashwin Sai Murali Neelakandan"
-date: "2025-01-29"
-output: ioslides_presentation
+date: "2025-02-06"
+output:
+  ioslides_presentation: default
+  slidy_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,15 +14,15 @@ knitr::opts_chunk$set(echo = FALSE)
 ## Synopsis  
 
 This capstone project was the final part of the Data Science Specialization by Johns Hopkins University at Coursera. The source code for this project can be found on GitHub at the following link:   
-
-## About the Project  
+https://github.com/AshwinNagasai/Data-Science-Capstone
 
 The final course project is of 2 parts:  
 
   - Creating a Shiny application and deploy it on RStudio servers  
   - Using Slidify or RStudio Presenter to create a short, reproducible pitch for the Shiny app  
   
-  The name of the Shiny App developed is "Word Prediction App", and it is hosted on RStudio's shinyapps.io hosted service, the link can be found below:
+  The name of the Shiny App developed is "Word Prediction App", and it is hosted on RStudio's shinyapps.io hosted service, the link can be found below:  
+  https://ashwinnagasai.shinyapps.io/Word_Prediction_app/
     
   
 ## Data Used  
@@ -37,11 +39,19 @@ The document corpus used to build the model was complied from samples taken from
 The model will only focus on the English corpora, but 3 other languages were available.  
 
 ## Basic Process of Building the Model  
+ - Getting the raw corpora data, doing some initial exploratory analyses to understand the statistical properties of the data set  
+ - Sampling the each text file and Combining the sample data to create a corpora    
+ - Cleaning the sample data by removing punctuation, numbers, profanity, converting to lower case, stemming the document, white spaces, and non English characters  
+ 
+### About the Algorithm  
+The Algorithm used is the Stupid Back Off algorithm - gives up the idea of trying to make the language model a true probability distribution, while not discounting the higher-order probabilities. If a higher-order n-gram has a zero count, we simply back off to a lower order n-gram and selection of the size depends on the type of text you are trying to predict
+  
+## How the Shiny App works  
 
- - Getting the raw corpora data  
- - Doing some initial exploratory analyses to understand the statistical properties of the data set  
- - Sampling the each text file and cleaning them i.e. removing punctuations, number, profanity, URLs and so on  
- - Combining the sample data to create a corpora  
- - Building N grams and calculating their frequencies  
- - Building the prediciton algorithm and the shiny app  
+ 1. The app takes the input of an word or a phrase and cleans the input using the same transformations used in the training data  
+ 2. For prediction of the next word, Quadgram is first used, first three words of Quadgram is the last three words of the user input, if an match is found in the training data, the app will predict the next word. If no match is found, it goes to the next step
+ 3. Now Trigram is used, the first two words are the last two words of the input, again if an match is found in the training data, the app will predict the next word. If no match is found, it goes to the next step
+ 4. Then Bigram is used, the first word is the last word of the input, and again if an match is found in the data, the app will predict the next word. If no match is found, it goes to the final step
+ 5. Finally the most common word with highest frequency is returned as the prediction if no matches were found for bigrams, trigrams, and quadgrams  
+ 
  

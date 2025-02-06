@@ -9,7 +9,7 @@
 
 
 
-  <meta name="date" content="2025-01-29" />
+  <meta name="date" content="2025-02-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2933,15 +2933,13 @@ ul.task-list{list-style: none;}
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
       
       <p data-config-presenter><!-- populated from slide_config.json --></p>
-            <p style="margin-top: 6px; margin-left: -2px;">2025-01-29</p>
+            <p style="margin-top: 6px; margin-left: -2px;">2025-02-06</p>
           </hgroup>
   </slide>
 
 <slide class><hgroup><h2>Synopsis</h2></hgroup><article id="synopsis">
 
 <p>This capstone project was the final part of the Data Science Specialization by Johns Hopkins University at Coursera. The source code for this project can be found on GitHub at the following link:<br /><a href="https://github.com/AshwinNagasai/Data-Science-Capstone" title>https://github.com/AshwinNagasai/Data-Science-Capstone</a></p>
-
-</article></slide><slide class><hgroup><h2>About the Project</h2></hgroup><article id="about-the-project">
 
 <p>The final course project is of 2 parts:</p>
 
@@ -2965,13 +2963,24 @@ ul.task-list{list-style: none;}
 </article></slide><slide class><hgroup><h2>Basic Process of Building the Model</h2></hgroup><article id="basic-process-of-building-the-model">
 
 <ul>
-<li>Getting the raw corpora data<br /></li>
-<li>Doing some initial exploratory analyses to understand the statistical properties of the data set<br /></li>
-<li>Sampling the each text file and cleaning them i.e. removing punctuations, number, profanity, URLs and so on<br /></li>
-<li>Combining the sample data to create a corpora<br /></li>
-<li>Building N grams and calculating their frequencies<br /></li>
-<li>Building the prediciton algorithm and the shiny app</li>
-</ul></article></slide>
+<li>Getting the raw corpora data, doing some initial exploratory analyses to understand the statistical properties of the data set<br /></li>
+<li>Sampling the each text file and Combining the sample data to create a corpora<br /></li>
+<li>Cleaning the sample data by removing punctuation, numbers, profanity, converting to lower case, stemming the document, white spaces, and non English characters</li>
+</ul>
+
+<h3>About the Algorithm</h3>
+
+<p>The Algorithm used is the Stupid Back Off algorithm - gives up the idea of trying to make the language model a true probability distribution, while not discounting the higher-order probabilities. If a higher-order n-gram has a zero count, we simply back off to a lower order n-gram and selection of the size depends on the type of text you are trying to predict</p>
+
+</article></slide><slide class><hgroup><h2>How the Shiny App works</h2></hgroup><article id="how-the-shiny-app-works">
+
+<ol>
+<li>The app takes the input of an word or a phrase and cleans the input using the same transformations used in the training data<br /></li>
+<li>For prediction of the next word, Quadgram is first used, first three words of Quadgram is the last three words of the user input, if an match is found in the training data, the app will predict the next word. If no match is found, it goes to the next step</li>
+<li>Now Trigram is used, the first two words are the last two words of the input, again if an match is found in the training data, the app will predict the next word. If no match is found, it goes to the next step</li>
+<li>Then Bigram is used, the first word is the last word of the input, and again if an match is found in the data, the app will predict the next word. If no match is found, it goes to the final step</li>
+<li>Finally the most common word with highest frequency is returned as the prediction if no matches were found for bigrams, trigrams, and quadgrams</li>
+</ol></article></slide>
 
 
   <slide class="backdrop"></slide>
